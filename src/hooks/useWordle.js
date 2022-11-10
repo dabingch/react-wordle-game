@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const useWordle = (solution) => {
-	const [turn, setTurn] = useState(5);
+	const [turn, setTurn] = useState(0);
 	const [currentGuess, setCurrentGuess] = useState("");
 	const [guesses, setGuesses] = useState([...Array(6)]); // each guess is an array
 	const [history, setHistory] = useState([]); // each guess is a string
@@ -35,13 +35,33 @@ const useWordle = (solution) => {
 	};
 
 	// Add a new guess
-	const addNewGuess = (formatted) => {};
+	const addNewGuess = (formattedGuess) => {
+		if (currentGuess === solution) {
+			setIsCorrect(true);
+		}
+
+		setGuesses((prevGuesses) => {
+			let newGuesses = [...prevGuesses];
+			newGuesses[turn] = formattedGuess;
+			return newGuesses;
+		});
+
+		setHistory((prevHistory) => {
+			return [...prevHistory, currentGuess];
+		});
+
+		setTurn((prevTurn) => {
+			return prevTurn + 1;
+		});
+
+		setCurrentGuess("");
+	};
 
 	// Track current guess
 	const handleKeyup = ({ key }) => {
 		// console.log(key);
 		if (key === "Enter") {
-			if (turn < 5) {
+			if (turn > 5) {
 				console.log("You have used all your guesses");
 				return;
 			}
